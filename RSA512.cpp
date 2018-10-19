@@ -4,39 +4,41 @@
 
 using namespace std;
 
+/* Global variables used in the code*/
 ap_uint<512> temp_arr[20] = {0};
 ap_uint<512> a_arr[20] = {0};
 ap_uint<512> b_arr[20] = {0};
 ap_uint<512> x_arr[20] = {0};
 ap_uint<512> y_arr[20] = {0};
 
+/* decleration of functions */
 int test();
-
 ap_uint<512> modinv(ap_uint<512> a, ap_uint<512> b);
 ap_uint<512> modexp(ap_uint<512> base, ap_uint<512> exp, ap_uint<512> n_modulus);
 
 int test()
-{
+{ 
+	/* Two 256-bit prime numbers to calculate the modulo */
 	ap_uint<256> p = "4669523849932130508876392554713407521319117239637943224980015676156491";
 	ap_uint<256> q = "4906275427767802358357703730938087362176142642699093827933107888253709";
 
-	ap_uint<1024> n = p * q;							//n
+	ap_uint<1024> n = p * q;					//n is the modulo
 	cout << "n is: " << n << "\n";
 
 	ap_uint<256> p_1 = p-1;
 	ap_uint<256> q_1 = q-1;
 
-	ap_uint<512> phi_n = p_1 * q_1;					//phi_n
+	ap_uint<512> phi_n = p_1 * q_1;					//phi_n is the Euler's Totient Function
 	cout << "phi_n is: " << phi_n << "\n";
 
-	ap_uint<512> e = 65537;							//e
+	ap_uint<512> e = 65537;						//e is the encryption key (public)
 	cout << "e is: " << e << "\n";
 
-	ap_uint<512> m = 65;								//m
+	ap_uint<512> m = 65;						//m is the message that is being encrypted
 	cout << "m is: " << m << "\n";
 
 	cout << "\n****************************************************************************\n";
-	ap_uint<512> d = modinv(e,phi_n);					//d
+	ap_uint<512> d = modinv(e,phi_n);				//d is the decryption key (private)
 	cout << "d is: " << d << "\n";
 	cout << "****************************************************************************\n";
 
@@ -52,6 +54,10 @@ int test()
 }
 
 
+
+/* Function that calculates the modular inverse of 'e' and 'phi_n' and returns the modular inverse
+   which is the decryption key
+*/
 ap_uint<512> modinv(ap_uint<512>a, ap_uint<512>b)
 {
 
@@ -68,6 +74,8 @@ ap_uint<512> modinv(ap_uint<512>a, ap_uint<512>b)
 	//count++;
 
 
+	
+	/* calculating the inverse using Extended Euclidean algorithm implemented in a non-recursive functionality */
 	while(a!=0)
 	{
 		temp = a;
@@ -85,8 +93,7 @@ ap_uint<512> modinv(ap_uint<512>a, ap_uint<512>b)
 	}
 
 
-	//count is 15 until now
-
+	//count is 15 until now			// debugging statements
 	// when a == 0; setting values of pointers '*x = 0' and '*y = 1'
 
 	ap_uint<512> gcd = b;
@@ -167,7 +174,7 @@ ap_uint<512> modinv(ap_uint<512>a, ap_uint<512>b)
 					cout << "b_arr[" << count << "] : " << b_arr[count] << "\n\n";
 
 
-	// when count == 0 --> end
+	// when count == 0 --> ends
 
 
 
@@ -192,7 +199,9 @@ ap_uint<512> modinv(ap_uint<512>a, ap_uint<512>b)
 		return res;
 }
 
-
+/* Modular exponentiation function implemented from the paper:
+   https://link.springer.com/chapter/10.1007/978-3-662-47401-3_15
+*/
 ap_uint<512> modexp(ap_uint<512> base, ap_uint<512> exp, ap_uint<512> n_modulus)
 {
 	ap_uint<512> C = 1;
