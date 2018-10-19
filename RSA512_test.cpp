@@ -8,7 +8,7 @@ int main()
 {
 	cout << "\n********************************************\n" << " Starting ..." << "\n";
 
-	test();
+	test(); //calls the main function 'test()' which is in the file "RSA512.cpp" in the repository
 
 
 return 0;
